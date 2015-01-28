@@ -3,6 +3,16 @@
 #undef EXTERN
 #include "strings.h"
 
+/**
+ * \brief   Checks for string end
+ *
+ *          Checks sample to indicate a string end.
+ *
+ * \param   delimiter The used delimiter
+ * \param	sample    The char to be checked
+ * \return	          true, if sampele indicates a string end.
+ *
+ */
 static bool is_string_end(char delimiter, char sample) {
 	if (sample == EOS) return true;
 	if (sample == delimiter) return true;
@@ -11,6 +21,23 @@ static bool is_string_end(char delimiter, char sample) {
 	return false;
 }
 
+/**
+ * \brief   Reads a string to a outer buffer
+ * 
+ *          Reads a string in *source and outputs it to buffer.
+ *          If *source starts with ' or " the function will read to the
+ *          corresponding quote. A backslash can be used as an escape
+ *          sequence for quotes and backslashes. Backslashes in front
+ *          of other caracters are ignored and not copied into the result.
+ * 
+ * \param   source      Source string, on success the pointer is set to the
+ *                      string-following char.
+ * \param   buffer      The destination buffer.
+ * \param   buffer_size The size of the destination buffer.
+ * \param   len_needed  Returns the buffer size needed to hold the complete
+ *                      string. May be NULL if value is not needed.
+ * \return  true in success, false on failure (buffer too small, no closing quote)
+ */
 bool read_string_to_buffer_ext(const char **source, char *buffer, size_t buffer_size, size_t *len_needed) {
 	const char *read = *source;
 	char delimiter;
@@ -66,10 +93,39 @@ bool read_string_to_buffer_ext(const char **source, char *buffer, size_t buffer_
 	}
 }
 
+/**
+ * \brief   Reads a string to a outer buffer
+ * 
+ *          Reads a string in *source and outputs it to buffer.
+ *          If *source starts with ' or " the function will read to the
+ *          corresponding quote. A backslash can be used as an escape
+ *          sequence for quotes and backslashes. Backslashes in front
+ *          of other caracters are ignored and not copied into the result.
+ * 
+ * \param   source      Source string, on success the pointer is set to the
+ *                      string-following char.
+ * \param   buffer      The destination buffer.
+ * \param   buffer_size The size of the destination buffer.
+ * \return  true in success, false on failure (buffer too small, no closing quote)
+ */
 bool read_string_to_buffer(const char **source, char *buffer, size_t buffer_size) {
 	return read_string_to_buffer_ext(source, buffer, buffer_size, NULL);
 }
 
+/**
+ * \brief   Reads a string to a inner buffer
+ * 
+ *          Reads a string in *source and outputs it to a internal buffer.
+ *          If *source starts with ' or " the function will read to the
+ *          corresponding quote. A backslash can be used as an escape
+ *          sequence for quotes and backslashes. Backslashes in front
+ *          of other caracters are ignored and not copied into the result.
+ * 
+ * \param   source      Source string, on success the pointer is set to the
+ *                      string-following char.
+ * \return  pointer to result string (static memory) on success,
+ *          NULL on failure (buffer too small, no closing quote)
+ */
 const char* read_string_to_static_buffer(const char **source) {
 	static char *buffer = NULL;
 	static size_t buffer_size = 0;
